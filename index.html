@@ -22,21 +22,27 @@
           <input type="text" id="brand" class="border p-2 rounded" placeholder="Brand" required>
           <input type="text" id="series" class="border p-2 rounded" placeholder="Series">
           <input type="text" id="character" class="border p-2 rounded" placeholder="Character">
+          
           <select id="type" class="border p-2 rounded">
             <option value="">Select Type</option>
             <option value="Action Figure">Action Figure</option>
-            <option value="Prop">Prop</option> <!-- Changed from "Poster" to "Prop" -->
-            <option value="Box Set">Box Set</option> <!-- Changed from "Keychain" to "Box Set" -->
+            <option value="Prop Replica">Prop Replica</option>
+            <option value="Stan Lee Box">Stan Lee Box</option>
+            <option value="Box Set">Box Set</option>
           </select>
+
           <select id="condition" class="border p-2 rounded">
             <option value="">Select Condition</option>
             <option value="New">New</option>
             <option value="Mint">Mint</option>
             <option value="Used">Used</option>
+            <option value="Pre-owned">Pre-owned</option>
           </select>
+          
           <input type="text" id="tags" class="border p-2 rounded" placeholder="Tags (comma-separated)">
           <input type="file" id="photo" class="border p-2 rounded">
         </div>
+        
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
           Save Item
         </button>
@@ -49,9 +55,24 @@
       <select id="filterType" class="border p-2 rounded">
         <option value="">Filter by Type</option>
         <option value="Action Figure">Action Figure</option>
-        <option value="Prop">Prop</option> <!-- Changed from "Poster" to "Prop" -->
-        <option value="Box Set">Box Set</option> <!-- Changed from "Keychain" to "Box Set" -->
+        <option value="Prop Replica">Prop Replica</option>
+        <option value="Stan Lee Box">Stan Lee Box</option>
+        <option value="Box Set">Box Set</option>
       </select>
+
+      <select id="filterBrand" class="border p-2 rounded mt-4">
+        <option value="">Filter by Brand</option>
+        <option value="Hot Toys">Hot Toys</option>
+        <option value="TBLeague">TBLeague</option>
+        <option value="Threezero">Threezero</option>
+        <option value="Sideshow Collectibles">Sideshow Collectibles</option>
+        <option value="ThreeA Toys">ThreeA Toys</option>
+        <option value="Haocaitoy">Haocaitoy</option>
+        <option value="Zhongshan Xintai Toy">Zhongshan Xintai Toy</option>
+        <option value="Bandai">Bandai</option>
+        <option value="Marvel Legends">Marvel Legends</option>
+      </select>
+
       <button id="clearFilters" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4">
         Clear Filters
       </button>
