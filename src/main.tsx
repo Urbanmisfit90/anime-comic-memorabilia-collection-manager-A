@@ -1,12 +1,16 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './redux/store'; // Import the store and persistor
 import App from './App';
-import './index.css'; // Ensure you import the base CSS if necessary
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const rootElement = document.getElementById('root') as HTMLElement;
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+ReactDOM.createRoot(rootElement).render(
+  <Provider store={store}>
+    {/* PersistGate ensures your app waits until the redux state is loaded from storage */}
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
 );
