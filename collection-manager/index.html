@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Manager</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script defer src="script.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="container mx-auto px-4 py-6">
+    <header class="mb-6">
+      <h1 class="text-4xl font-extrabold text-center text-blue-600">Collection Manager</h1>
+      <p class="text-center text-gray-600 mt-2">Manage your collection efficiently and effortlessly with our intuitive tools.</p>
+    </header>
+    <main class="flex flex-col items-center space-y-4">
+
+      <!-- Form to Add/Edit Items -->
+      <div class="bg-white p-4 shadow rounded mb-6">
+        <form id="itemForm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="name" class="border p-2 rounded" placeholder="Item Name" required>
+            <input type="text" id="brand" class="border p-2 rounded" placeholder="Brand" required>
+            <input type="text" id="series" class="border p-2 rounded" placeholder="Series">
+            <input type="text" id="character" class="border p-2 rounded" placeholder="Character">
+            <select id="type" class="border p-2 rounded">
+              <option value="">Select Type</option>
+              <option value="Action Figure">Action Figure</option>
+              <option value="Prop">Prop</option>
+              <option value="Box Set">Box Set</option>
+            </select>
+            <select id="condition" class="border p-2 rounded">
+              <option value="">Select Condition</option>
+              <option value="New">New</option>
+              <option value="Mint">Mint</option>
+              <option value="Used">Used</option>
+            </select>
+            <input type="text" id="tags" class="border p-2 rounded" placeholder="Tags (comma-separated)">
+            <input type="file" id="photo" class="border p-2 rounded">
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
+            Save Item
+          </button>
+        </form>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white p-4 shadow rounded mb-6">
+        <h2 class="text-2xl font-bold mb-4">Filters</h2>
+        <select id="filterType" class="border p-2 rounded">
+          <option value="">Filter by Type</option>
+          <option value="Action Figure">Action Figure</option>
+          <option value="Prop">Prop</option>
+          <option value="Box Set">Box Set</option>
+        </select>
+        <button id="clearFilters" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Collection Display -->
+      <div class="bg-white p-4 shadow rounded">
+        <h2 class="text-2xl font-bold mb-4">My Collection</h2>
+        <div id="collection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Items will be rendered here -->
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4 mt-8">
+      <p>© 2024 Collection Manager. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
