@@ -1,41 +1,85 @@
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from './redux/collectionSlice';
+import { RootState } from './redux/store';
+import { Item } from './redux/collectionSlice';  // Correct import of Item
 
 function App() {
-  const [count, setCount] = useState(0);
+  const dispatch = useDispatch();
+  const collection = useSelector((state: RootState) => state.collection.items);
+
+  const [name, setName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [series, setSeries] = useState('');
+  const [character, setCharacter] = useState('');
+  const [type, setType] = useState('');
+  const [condition, setCondition] = useState('');
+  const [tags, setTags] = useState('');
+  const [photo, setPhoto] = useState('');
+
+  const handleSaveItem = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newItem: Item = {  // Use Item type here
+      id: Date.now().toString(),
+      name,
+      brand,
+      series,
+      character,
+      type,
+      condition,
+      tags,
+      photo,
+    };
+
+    dispatch(addItem(newItem));
+
+    setName('');
+    setBrand('');
+    setSeries('');
+    setCharacter('');
+    setType('');
+    setCondition('');
+    setTags('');
+    setPhoto('');
+  };
 
   return (
-    <>
-      <header>
-        <div>
-          <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-            <img src={reactLogo} className="logo react spin" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
-      </header>
-      <main>
-        <div className="card">
-          <button
-            onClick={() => setCount((prevCount) => prevCount + 1)}
-            aria-label="Increment count"
-          >
-            Count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR.
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more.
-        </p>
-      </main>
-    </>
+    <div className="container mx-auto px-4 py-6">
+      <h1 className="text-4xl font-extrabold text-center text-blue-600">Collection Manager</h1>
+
+      <form onSubmit={handleSaveItem}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Item Name"
+          required
+        />
+        <input
+          type="text"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          placeholder="Brand"
+          required
+        />
+        {/* Other form inputs go here */}
+
+        <button type="submit">Save Item</button>
+      </form>
+
+      <div>
+        <h2>My Collection</h2>
+        <ul>
+          {collection.map((item) => (
+            <li key={item.id}>
+              {item.name} - {item.brand}
+              <button onClick={() => dispatch(removeItem(item.id))}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 
