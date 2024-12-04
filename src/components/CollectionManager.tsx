@@ -8,11 +8,17 @@ function CollectionManager() {
   const collection = useSelector((state: RootState) => state.collection.items);
 
   const handleSaveItem = (newItem: Item) => {
+    if (newItem.name.trim() === '' || newItem.brand.trim() === '') {
+      alert('Name and Brand are required!');
+      return;
+    }
     dispatch(addItem(newItem));
   };
 
   const handleRemoveItem = (id: string) => {
-    dispatch(removeItem(id));
+    if (window.confirm('Are you sure you want to delete this item?')) {
+      dispatch(removeItem(id));
+    }
   };
 
   return (
@@ -26,8 +32,23 @@ function CollectionManager() {
           </li>
         ))}
       </ul>
-      {/* Example form for adding items */}
-      <button onClick={() => handleSaveItem({ id: '1', name: 'Item 1', brand: 'Brand A', series: '', character: '', type: '', condition: '', tags: '', photo: '' })}>Add Item</button>
+      <button
+        onClick={() =>
+          handleSaveItem({
+            id: Date.now().toString(),
+            name: 'Sample Item',
+            brand: 'Sample Brand',
+            series: 'Sample Series',
+            character: 'Sample Character',
+            type: 'Action Figure',
+            condition: 'New',
+            tags: 'sample,collection',
+            photo: '',
+          })
+        }
+      >
+        Add Sample Item
+      </button>
     </div>
   );
 }

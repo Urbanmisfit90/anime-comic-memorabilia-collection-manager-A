@@ -2,83 +2,80 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem } from './redux/collectionSlice';
 import { RootState } from './redux/store';
-import { Item } from './redux/collectionSlice';  // Correct import of Item
 
 function App() {
   const dispatch = useDispatch();
   const collection = useSelector((state: RootState) => state.collection.items);
 
-  const [name, setName] = useState('');
-  const [brand, setBrand] = useState('');
-  const [series, setSeries] = useState('');
-  const [character, setCharacter] = useState('');
-  const [type, setType] = useState('');
-  const [condition, setCondition] = useState('');
-  const [tags, setTags] = useState('');
-  const [photo, setPhoto] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    brand: '',
+    series: '',
+    character: '',
+    type: '',
+    condition: '',
+    tags: '',
+    photo: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData((prev) => ({ ...prev, photo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSaveItem = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newItem: Item = {  // Use Item type here
-      id: Date.now().toString(),
-      name,
-      brand,
-      series,
-      character,
-      type,
-      condition,
-      tags,
-      photo,
-    };
-
-    dispatch(addItem(newItem));
-
-    setName('');
-    setBrand('');
-    setSeries('');
-    setCharacter('');
-    setType('');
-    setCondition('');
-    setTags('');
-    setPhoto('');
+    if (!formData.name || !formData.brand) {
+      alert('Name and Brand are required!');
+      return;
+    }
+    dispatch(addItem({ ...formData, id: Date.now().toString() }));
+    setFormData({
+      name: '',
+      brand: '',
+      series: '',
+      character: '',
+      type: '',
+      condition: '',
+      tags: '',
+      photo: '',
+    });
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h1 className="text-4xl font-extrabold text-center text-blue-600">Collection Manager</h1>
-
+    <div>
+      <h1>Collection App</h1>
       <form onSubmit={handleSaveItem}>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Item Name"
-          required
-        />
-        <input
-          type="text"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          placeholder="Brand"
-          required
-        />
-        {/* Other form inputs go here */}
-
+        <input type="text" id="name" value={formData.name} onChange={handleChange} placeholder="Name" />
+        <input type="text" id="brand" value={formData.brand} onChange={handleChange} placeholder="Brand" />
+        <input type="file" id="photo" onChange={handleFileChange} />
         <button type="submit">Save Item</button>
       </form>
-
-      <div>
-        <h2>My Collection</h2>
-        <ul>
-          {collection.map((item) => (
-            <li key={item.id}>
-              {item.name} - {item.brand}
-              <button onClick={() => dispatch(removeItem(item.id))}>Remove</button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <h2>My Collection</h2>
+      <ul>
+        {collection.map((item) => (
+          <li key={item.id}>
+            <div>
+              {item.photo && <img src={item.photo} alt={`${item.name} photo`} width="100" />}
+              <p>
+                <strong>{item.name}</strong> ({item.brand})
+              </p>
+            </div>
+            <button onClick={() => dispatch(removeItem(item.id))}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
