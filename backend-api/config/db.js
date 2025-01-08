@@ -3,14 +3,21 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
+        const mongoURI = process.env.MONGODB_URI;
+        if (!mongoURI) {
+            throw new Error('MONGODB_URI is not defined in .env file');
+        }
+
+        console.log(`Connecting to MongoDB: ${mongoURI.substring(0, 20)}...`);
+
+        await mongoose.connect(mongoURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log('MongoDB Connected...');
-    } catch (err) {
-        console.error(err.message);
-        // Exit process with failure
+
+        console.log('MongoDB Connected!');
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
         process.exit(1);
     }
 };

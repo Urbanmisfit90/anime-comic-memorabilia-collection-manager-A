@@ -36,7 +36,6 @@ function App() {
         fetchItems();
     }, [dispatch]);
 
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData((prev) => ({ ...prev, [id]: value }));
@@ -46,7 +45,7 @@ function App() {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => { // Use onloadend to handle both success and failure
+            reader.onloadend = () => {
                 setFormData((prev) => ({ ...prev, photo: reader.result as string }));
             };
             reader.onerror = () => {
@@ -65,12 +64,12 @@ function App() {
             return;
         }
 
+        console.log('Data to be sent:', formData); // Log before fetch
+
         try {
             const response = await fetch('/items', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
@@ -80,9 +79,10 @@ function App() {
             }
 
             const savedItem = await response.json();
+            console.log('Response from server:', savedItem); // Log after fetch
             dispatch(addItem(savedItem));
 
-            setFormData({
+            setFormData({ // Clear the form
                 name: '',
                 brand: '',
                 series: '',
@@ -110,7 +110,6 @@ function App() {
             alert("Error deleting item. Please check the console.");
         }
     };
-
 
     return (
         <div>
@@ -140,14 +139,14 @@ function App() {
             <h2>My Collection</h2>
             <ul>
                 {collection.map((item) => (
-                    <li key={item._id}> {/* Access _id from MongoDB */}
+                    <li key={item._id}>
                         <div>
                             {item.photo && <img src={item.photo} alt={`${item.name} photo`} width="100" />}
                             <p>
                                 <strong>{item.name}</strong> ({item.brand})
                             </p>
                         </div>
-                        <button onClick={() => handleDeleteItem(item._id)}>Delete</button> {/* Pass _id to delete */}
+                        <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
                     </li>
                 ))}
             </ul>
