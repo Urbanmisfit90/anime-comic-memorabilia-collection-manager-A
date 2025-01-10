@@ -110,6 +110,14 @@ function App() {
             alert("Error deleting item. Please check the console.");
         }
     };
+    console.log("here")
+
+    React.useEffect(() => {
+      console.log('here')
+      fetch('localhost:5000')
+          .then(res => console.log(res))
+          .catch(err => console.log(err))
+  }, [])
 
     return (
         <div>
