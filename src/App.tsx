@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, setItems } from './redux/collectionSlice';
 import { RootState } from './redux/store';
+import { Item } from './redux/collectionSlice';
 
 function App() {
     const dispatch = useDispatch();
@@ -64,8 +65,6 @@ function App() {
             return;
         }
 
-        console.log('Data to be sent:', formData); // Log before fetch
-
         try {
             const response = await fetch('/items', {
                 method: 'POST',
@@ -74,15 +73,14 @@ function App() {
             });
 
             if (!response.ok) {
-                const errorData = await response.json(); // Try to parse error message from the backend
+                const errorData = await response.json();
                 throw new Error(`HTTP error ${response.status}: ${errorData?.message || response.statusText}`);
             }
 
             const savedItem = await response.json();
-            console.log('Response from server:', savedItem); // Log after fetch
             dispatch(addItem(savedItem));
 
-            setFormData({ // Clear the form
+            setFormData({
                 name: '',
                 brand: '',
                 series: '',
@@ -98,26 +96,18 @@ function App() {
         }
     };
 
-    const handleDeleteItem = async (id: string) => {
+    const handleDeleteItem = async (_id: string) => {
         try {
-            const response = await fetch(`/items/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/items/${_id}`, { method: 'DELETE' });
             if (!response.ok) {
                 throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
             }
-            dispatch(removeItem(id));
+            dispatch(removeItem(_id));
         } catch (error) {
             console.error("Error deleting item:", error);
             alert("Error deleting item. Please check the console.");
         }
     };
-    console.log("here")
-
-    React.useEffect(() => {
-      console.log('here')
-      fetch('localhost:5000')
-          .then(res => console.log(res))
-          .catch(err => console.log(err))
-  }, [])
 
     return (
         <div>
@@ -140,13 +130,13 @@ function App() {
                     <option value="Used">Used</option>
                 </select>
                 <input type="text" id="tags" value={formData.tags} onChange={handleChange} placeholder="Tags (comma-separated)" />
-                <input type="file" id="photo" onChange={handleFileChange} />
+                <input type="file" id="photo" onChange={handleFileChange} /> {/* Use handleFileChange here */}
                 <button type="submit">Save Item</button>
             </form>
 
             <h2>My Collection</h2>
             <ul>
-                {collection.map((item) => (
+                {collection.map((item: Item) => (
                     <li key={item._id}>
                         <div>
                             {item.photo && <img src={item.photo} alt={`${item.name} photo`} width="100" />}
