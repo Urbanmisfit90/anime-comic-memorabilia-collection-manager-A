@@ -1,8 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  root: 'collection-manager', // Set the root directory to the collection-manager folder
-})
+    plugins: [react()],
+    server: {
+        proxy: {
+            '/items': {  // Proxy requests to /items to backend
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+            },
+        },
+    },
+});

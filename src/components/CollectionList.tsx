@@ -35,3 +35,4 @@ const CollectionList: React.FC<CollectionListProps> = ({ items }) => {
 };
 
 export default CollectionList;
+
