@@ -1,39 +1,30 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
-// Define the Item type
+const API_URL = 'http://localhost:5000/items';
+
 export interface Item {
-  _id: string;
-  name: string;
-  brand: string;
-  series?: string;
-  character?: string;
-  type?: string;
-  condition?: string;
-  tags?: string;
-  photo?: string;
+    _id: string;
+    name: string;
+    brand: string;
+    series?: string;
+    character?: string;
+    type?: string;
+    condition?: string;
+    tags?: string;
+    photo?: string;
 }
 
-// Define the API URL, default to local backend if environment variable is not set
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/items';
-
-// Get all items (returns an array of items)
 export const getItems = async (): Promise<Item[]> => {
     try {
-        const response = await axios.get<Item[]>(API_URL); // Specify the type of the response
-        return response.data; // Response will be typed as Item[]
-    } catch (error) {
-        console.error('Error fetching items:', error);
-        throw error;
-    }
-};
-
-// Create a new item (returns the created item)
-export const createItem = async (item: Item): Promise<Item> => {
-    try {
-        const response = await axios.post<Item>(API_URL, item); // Specify the type of the response
-        return response.data; // Response will be typed as Item
-    } catch (error) {
-        console.error('Error creating item:', error);
-        throw error;
+        const response = await axios.get(API_URL);
+        return response.data;
+    } catch (err: unknown) {
+        // Type assertion to AxiosError to access error properties
+        if (err instanceof AxiosError) {
+            console.error('Error fetching items:', err.response?.data);
+        } else {
+            console.error('Unexpected error:', err);
+        }
+        throw new Error('Failed to fetch items');
     }
 };

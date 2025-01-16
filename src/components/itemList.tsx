@@ -14,7 +14,7 @@ const ItemList: React.FC = () => {
                 setItems(fetchedItems);
                 setLoading(false);
             } catch (err) {
-                // Use the appropriate error type (AxiosError)
+                // Type the error correctly
                 if (err instanceof AxiosError) {
                     console.error('Error fetching items:', err.response?.data);
                 } else {
