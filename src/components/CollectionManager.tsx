@@ -3,6 +3,7 @@ import { Item } from '../redux/collectionSlice';
 import { addItem } from '../redux/collectionSlice';
 import { removeItem } from '../redux/collectionSlice';
 import { RootState } from '../redux/store';
+import React from 'react';
 
 function CollectionManager() {
     const dispatch = useDispatch();

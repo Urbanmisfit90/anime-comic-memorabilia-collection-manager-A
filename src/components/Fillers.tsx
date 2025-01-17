@@ -1,3 +1,5 @@
+import React from "react";
+
 function Filters() {
     return (
         <div className="bg-white p-4 shadow rounded">
