@@ -3,7 +3,7 @@ import { Item } from '../redux/collectionSlice';
 import { addItem } from '../redux/collectionSlice';
 import { removeItem } from '../redux/collectionSlice';
 import { RootState } from '../redux/store';
-import React from 'react';
+import React from 'react'; // spider-man-spider-punk-suit_marvel_gallery_64b1b3218759d
 
 function CollectionManager() {
     const dispatch = useDispatch();
