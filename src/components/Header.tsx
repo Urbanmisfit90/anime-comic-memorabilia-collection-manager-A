@@ -1,19 +1,12 @@
-import React from "react";
+import React from 'react';
 
 const Header: React.FC = () => {
-  return (
-    <header style={headerStyle}>
-      <h1>Welcome to My App</h1>
-    </header>
-  );
-};
-
-// Optional inline styling
-const headerStyle: React.CSSProperties = {
-  backgroundColor: "#4CAF50",
-  color: "white",
-  textAlign: "center",
-  padding: "1rem",
+    return (
+        <header className="mb-6">
+            <h1 className="text-4xl font-extrabold text-center text-blue-600">Collection Manager</h1>
+            <p className="text-center text-gray-600 mt-2">Manage your collection efficiently and effortlessly with our intuitive tools.</p>
+        </header>
+    );
 };
 
 export default Header;

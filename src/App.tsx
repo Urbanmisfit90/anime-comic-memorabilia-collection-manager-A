@@ -1,155 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addItem, removeItem, setItems } from './redux/collectionSlice';
-import { RootState } from './redux/store';
-import { Item } from './redux/collectionSlice';
+import Header from './components/Header';
+import ItemForm from './components/ItemForm';
+import CollectionDisplay from './components/CollectionDisplay';
+import Footer from './components/Footer';
 
-function App() {
-    const dispatch = useDispatch();
-    const collection = useSelector((state: RootState) => state.collection.items);
+interface Item {
+    _id?: string;
+    name: string;
+    brand: string;
+    series?: string;
+    character?: string;
+    type?: string;
+    condition?: string;
+    tags?: string;
+    photo?: string | null;
+}
 
-    const [formData, setFormData] = useState({
-        name: '',
-        brand: '',
-        series: '',
-        character: '',
-        type: '',
-        condition: '',
-        tags: '',
-        photo: '',
-    });
+const App: React.FC = () => {
+    const [collection, setCollection] = useState<Item[]>([]);
+    const [editingItem, setEditingItem] = useState<Item | null>(null);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
     useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const response = await fetch('/items');
-                if (!response.ok) {
-                    throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
-                }
-                const data = await response.json();
-                dispatch(setItems(data));
-            } catch (error) {
-                console.error("Error fetching items:", error);
-                alert("Error fetching items. Please check the console.");
-            }
-        };
+        const storedCollection = JSON.parse(localStorage.getItem("collection") || "[]");
+        setCollection(storedCollection);
+    }, []);
 
-        fetchItems();
-    }, [dispatch]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({ ...prev, [id]: value }));
+    const handleCollectionUpdate = (updatedCollection: Item[]) => {
+        setCollection(updatedCollection);
+        localStorage.setItem("collection", JSON.stringify(updatedCollection));
+        setEditingItem(null);
+        setEditIndex(null);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({ ...prev, photo: reader.result as string }));
-            };
-            reader.onerror = () => {
-                console.error("Error reading file");
-                alert("Error reading file.");
-            }
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSaveItem = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.name || !formData.brand) {
-            alert('Name and Brand are required!');
-            return;
-        }
-
-        try {
-            const response = await fetch('/items', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`HTTP error ${response.status}: ${errorData?.message || response.statusText}`);
-            }
-
-            const savedItem = await response.json();
-            dispatch(addItem(savedItem));
-
-            setFormData({
-                name: '',
-                brand: '',
-                series: '',
-                character: '',
-                type: '',
-                condition: '',
-                tags: '',
-                photo: '',
-            });
-        } catch (error) {
-            console.error('Error saving item:', error);
-            alert('Error saving item. Please check the console.');
-        }
-    };
-
-    const handleDeleteItem = async (_id: string) => {
-        try {
-            const response = await fetch(`/items/${_id}`, { method: 'DELETE' });
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
-            }
-            dispatch(removeItem(_id));
-        } catch (error) {
-            console.error("Error deleting item:", error);
-            alert("Error deleting item. Please check the console.");
-        }
+    const handleEdit = (item: Item, index: number) => {
+        setEditingItem(item);
+        setEditIndex(index);
     };
 
     return (
-        <div>
-            <h1>Collection App</h1>
-            <form onSubmit={handleSaveItem}>
-                <input type="text" id="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
-                <input type="text" id="brand" value={formData.brand} onChange={handleChange} placeholder="Brand" required />
-                <input type="text" id="series" value={formData.series} onChange={handleChange} placeholder="Series" />
-                <input type="text" id="character" value={formData.character} onChange={handleChange} placeholder="Character" />
-                <select id="type" value={formData.type} onChange={handleChange}>
-                    <option value="">Select Type</option>
-                    <option value="Action Figure">Action Figure</option>
-                    <option value="Prop">Prop</option>
-                    <option value="Box Set">Box Set</option>
-                </select>
-                <select id="condition" value={formData.condition} onChange={handleChange}>
-                    <option value="">Select Condition</option>
-                    <option value="New">New</option>
-                    <option value="Mint">Mint</option>
-                    <option value="Used">Used</option>
-                </select>
-                <input type="text" id="tags" value={formData.tags} onChange={handleChange} placeholder="Tags (comma-separated)" />
-                <input type="file" id="photo" onChange={handleFileChange} /> {/* Use handleFileChange here */}
-                <button type="submit">Save Item</button>
-            </form>
-
-            <h2>My Collection</h2>
-            <ul>
-                {collection.map((item: Item) => (
-                    <li key={item._id}>
-                        <div>
-                            {item.photo && <img src={item.photo} alt={`${item.name} photo`} width="100" />}
-                            <p>
-                                <strong>{item.name}</strong> ({item.brand})
-                            </p>
-                        </div>
-                        <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+        <div className="container mx-auto px-4 py-6">
+            <Header />
+            <main className="flex flex-col items-center space-y-4">
+                <ItemForm onSave={handleCollectionUpdate} editingItem={editingItem} editIndex={editIndex} />
+                <CollectionDisplay collection={collection} onUpdate={handleCollectionUpdate} onEdit={handleEdit} />
+            </main>
+            <Footer />
         </div>
     );
-}
+};
 
 export default App;
