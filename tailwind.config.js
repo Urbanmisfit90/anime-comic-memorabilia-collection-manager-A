@@ -1,12 +1,8 @@
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"], // Ensure your paths are correct
   theme: {
-    extend: {
-      colors: {
-        primary: '#646cff',
-        secondary: '#535bf2',
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };
+
