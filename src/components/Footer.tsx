@@ -16,6 +16,8 @@ const footerStyle: React.CSSProperties = {
   padding: "0.5rem",
   position: "fixed",
   bottom: 0,
+  left: 0,
+  right: 0,
   width: "100%",
 };
 

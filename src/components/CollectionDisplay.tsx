@@ -33,17 +33,17 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {collection.map((item, index) => (
-            <div key={index} className="border rounded p-2 flex items-start"> {/* Added items-start */}
-              <div className="flex-grow mr-4"> {/* Added margin-right */}
-                <p className="mb-1"> {/* Added margin-bottom */}
+            <div key={index} className="border rounded p-2 flex items-start">
+              <div className="flex-grow mr-4">
+                <p className="mb-1">
                   <strong>{item.name}</strong> ({item.brand})
                 </p>
-                {item.series && <p className="mb-1">Series: {item.series}</p>} {/* Added margin-bottom */}
-                {item.character && <p className="mb-1">Character: {item.character}</p>} {/* Added margin-bottom */}
-                {item.type && <p className="mb-1">Type: {item.type}</p>} {/* Added margin-bottom */}
-                {item.condition && <p className="mb-1">Condition: {item.condition}</p>} {/* Added margin-bottom */}
-                {item.tags && <p className="mb-1">Tags: {item.tags}</p>} {/* Added margin-bottom */}
-                <div className="flex justify-between mt-2">
+                {item.series && <p className="mb-1">Series: {item.series}</p>}
+                {item.character && <p className="mb-1">Character: {item.character}</p>}
+                {item.type && <p className="mb-1">Type: {item.type}</p>}
+                {item.condition && <p className="mb-1">Condition: {item.condition}</p>}
+                {item.tags && <p className="mb-1">Tags: {item.tags}</p>}
+                <div className="flex gap-4 mt-4">
                   <button
                     onClick={() => onEdit(item, index)}
                     className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded text-sm"
@@ -62,7 +62,7 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
                 <img
                   src={item.photo}
                   alt={`${item.name} photo`}
-                  className="w-32 h-32 object-cover rounded"
+                  className="w-72 h-72 object-cover rounded ml-80"
                 />
               )}
             </div>
@@ -74,3 +74,4 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
 };
 
 export default CollectionDisplay;
+
