@@ -10,6 +10,7 @@ interface Item {
     condition?: string;
     tags?: string;
     photo?: string | null;
+    edition?: string;
 }
 
 interface ItemFormProps {
@@ -19,7 +20,7 @@ interface ItemFormProps {
 }
 
 const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) => {
-    const [item, setItem] = useState<Omit<Item, 'photo' | 'series' | 'character' | 'type' | 'condition' | 'tags'>>({
+    const [item, setItem] = useState<Omit<Item, 'photo' | 'series' | 'character' | 'type' | 'condition' | 'tags' | 'edition'>>({
         name: '',
         brand: '',
     });
@@ -29,6 +30,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
     const [type, setType] = useState<string>('');
     const [condition, setCondition] = useState<string>('');
     const [tags, setTags] = useState<string>('');
+    const [edition, setEdition] = useState<string>('');
 
     useEffect(() => {
         if (editingItem) {
@@ -39,6 +41,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
             setType(editingItem.type || '');
             setCondition(editingItem.condition || '');
             setTags(editingItem.tags || '');
+            setEdition(editingItem.edition || '');
         } else {
             setItem({ name: '', brand: '' });
             setPhoto(null);
@@ -47,6 +50,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
             setType('');
             setCondition('');
             setTags('');
+            setEdition('');
         }
     }, [editingItem]);
 
@@ -64,6 +68,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
             setCondition(value);
         } else if (id === 'tags') {
             setTags(value);
+        } else if (id === 'edition') {
+            setEdition(value);
         }
     };
 
@@ -82,7 +88,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
         e.preventDefault();
         const collection = JSON.parse(localStorage.getItem("collection") || "[]") as Item[];
 
-        const newItem = { ...item, photo, series, character, type, condition, tags};
+        const newItem = { ...item, photo, series, character, type, condition, tags, edition };
 
         if (editIndex !== null) {
             collection[editIndex] = newItem;
@@ -111,6 +117,12 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
                         <option value="New">New</option>
                         <option value="Mint">Mint</option>
                         <option value="Used">Used</option>
+                    </select>
+                    <select id="edition" className="border p-2 rounded" value={edition} onChange={handleChange}>
+                        <option value="">Select Edition</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Deluxe">Deluxe</option>
+                        <option value="Collectors">Collectors</option>
                     </select>
                     <input type="text" id="tags" className="border p-2 rounded" placeholder="Tags (comma-separated)" value={tags} onChange={handleChange} />
                     <input type="file" id="photo" className="border p-2 rounded" onChange={handleFileChange} />

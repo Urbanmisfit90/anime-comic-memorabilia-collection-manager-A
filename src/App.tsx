@@ -14,6 +14,7 @@ interface Item {
     condition?: string;
     tags?: string;
     photo?: string | null;
+    edition?: string;
 }
 
 const App: React.FC = () => {

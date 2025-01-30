@@ -10,6 +10,7 @@ interface Item {
   condition?: string;
   tags?: string;
   photo?: string | null;
+  edition?: string;
 }
 
 interface CollectionDisplayProps {
@@ -42,6 +43,7 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
                 {item.character && <p className="mb-1">Character: {item.character}</p>}
                 {item.type && <p className="mb-1">Type: {item.type}</p>}
                 {item.condition && <p className="mb-1">Condition: {item.condition}</p>}
+                {item.edition && <p className="mb-1">Edition: {item.edition}</p>}
                 {item.tags && <p className="mb-1">Tags: {item.tags}</p>}
                 <div className="flex gap-4 mt-4">
                   <button
@@ -74,4 +76,3 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
 };
 
 export default CollectionDisplay;
-
