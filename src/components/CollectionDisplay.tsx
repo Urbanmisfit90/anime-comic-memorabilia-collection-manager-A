@@ -32,39 +32,40 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
       {collection.length === 0 ? (
         <p>No items in your collection yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-col gap-4">
           {collection.map((item, index) => (
-            <div key={index} className="border rounded p-2 flex items-start">
-              <div className="flex-grow mr-4">
-                <p className="mb-1">
-                  <strong>{item.name}</strong> ({item.brand})
-                </p>
-                {item.series && <p className="mb-1">Series: {item.series}</p>}
-                {item.character && <p className="mb-1">Character: {item.character}</p>}
-                {item.type && <p className="mb-1">Type: {item.type}</p>}
-                {item.condition && <p className="mb-1">Condition: {item.condition}</p>}
-                {item.edition && <p className="mb-1">Edition: {item.edition}</p>}
-                {item.tags && <p className="mb-1">Tags: {item.tags}</p>}
-                <div className="flex gap-4 mt-4">
-                  <button
-                    onClick={() => onEdit(item, index)}
-                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded text-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(index)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+            <div key={index} className="border rounded p-4 flex flex-col md:flex-row items-start gap-4">
+<div className="flex-grow">
+  <p className="mb-1">
+    <strong>{item.name}</strong>
+  </p>
+  <p className="mb-1">Brand: {item.brand}</p> {/* Moved brand below item name */}
+  {item.series && <p className="mb-1">Series: {item.series}</p>}
+  {item.character && <p className="mb-1">Character: {item.character}</p>}
+  {item.type && <p className="mb-1">Type: {item.type}</p>}
+  {item.condition && <p className="mb-1">Condition: {item.condition}</p>}
+  {item.edition && <p className="mb-1">Edition: {item.edition}</p>}
+  {item.tags && <p className="mb-1">Tags: {item.tags}</p>}
+  <div className="flex gap-4 mt-4">
+    <button
+      onClick={() => onEdit(item, index)}
+      className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded text-sm"
+    >
+      Edit
+    </button>
+    <button
+      onClick={() => handleDelete(index)}
+      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
+    >
+      Delete
+    </button>
+  </div>
+</div>
               {item.photo && (
                 <img
                   src={item.photo}
                   alt={`${item.name} photo`}
-                  className="w-72 h-72 object-cover rounded ml-80"
+                  className="w-56 h564 object-cover rounded ml-80"
                 />
               )}
             </div>

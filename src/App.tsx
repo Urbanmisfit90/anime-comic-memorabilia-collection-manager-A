@@ -3,19 +3,7 @@ import Header from './components/Header';
 import ItemForm from './components/ItemForm';
 import CollectionDisplay from './components/CollectionDisplay';
 import Footer from './components/Footer';
-
-interface Item {
-    _id?: string;
-    name: string;
-    brand: string;
-    series?: string;
-    character?: string;
-    type?: string;
-    condition?: string;
-    tags?: string;
-    photo?: string | null;
-    edition?: string;
-}
+import { Item } from './types/item'; // Import Item type from a dedicated file
 
 const App: React.FC = () => {
     const [collection, setCollection] = useState<Item[]>([]);
@@ -23,7 +11,7 @@ const App: React.FC = () => {
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
     useEffect(() => {
-        const storedCollection = JSON.parse(localStorage.getItem("collection") || "[]");
+        const storedCollection = JSON.parse(localStorage.getItem("collection") || "[]") as Item[];
         setCollection(storedCollection);
     }, []);
 
