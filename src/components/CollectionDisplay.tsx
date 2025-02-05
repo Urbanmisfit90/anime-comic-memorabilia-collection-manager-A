@@ -62,13 +62,13 @@ const CollectionDisplay: React.FC<CollectionDisplayProps> = ({ collection, onUpd
                 </div>
               </div>
               {item.photo && (
-                <div className="md:w-56 md:h-56 overflow-hidden rounded mt-4 md:mt-0">
-                  <img
-                    src={item.photo}
-                    alt={`${item.name} photo`}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
+                <div className="md:w-64 rounded mt-4 md:mt-0"> {/* Increased width */}
+  <img 
+    src={item.photo} 
+    alt={`${item.name} photo`} 
+    className="object-contain w-full h-full" 
+  />
+</div>
               )}
             </div>
           ))}

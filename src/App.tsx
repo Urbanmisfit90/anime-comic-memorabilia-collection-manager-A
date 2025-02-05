@@ -10,6 +10,7 @@ const App: React.FC = () => {
     const [collection, setCollection] = useState<Item[]>([]);
     const [editingItem, setEditingItem] = useState<Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
+    const [hasLoaded, setHasLoaded] = useState(false); // New state variable
 
     useEffect(() => {
         const storedCollectionString = localStorage.getItem("collection");
@@ -22,13 +23,16 @@ const App: React.FC = () => {
                 setCollection([]);
             }
         }
+        setHasLoaded(true); // Mark as loaded after initial load
     }, []);
 
     useEffect(() => {
-        if (collection.length > 0) {
+        if (hasLoaded && collection.length > 0) { // Only save if loaded and not empty
             localStorage.setItem("collection", JSON.stringify(collection));
+        } else if (hasLoaded && collection.length === 0) {
+          localStorage.removeItem("collection"); // Clear localStorage if collection is empty
         }
-    }, [collection]);
+    }, [collection, hasLoaded]);
 
     const handleCollectionUpdate = (updatedCollection: Item[]) => {
         setCollection(updatedCollection);
