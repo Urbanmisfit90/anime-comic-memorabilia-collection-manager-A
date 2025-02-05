@@ -1,47 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { TextField, Button, Paper, Stack, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, styled } from '@mui/material';
 
 interface Item {
-  _id?: string;
-  name: string;
-  brand: string;
-  series?: string;
-  character?: string;
-  type?: string;
-  condition?: string;
-  tags?: string;
-  photo?: string | null;
-  edition?: string;
+    _id?: string;
+    name: string;
+    brand: string;
+    series?: string;
+    character?: string;
+    type?: string;
+    condition?: string;
+    tags?: string;
+    photo?: string | null;
+    edition?: string;
 }
 
 interface ItemFormProps {
-  onSave: (updatedCollection: Item[]) => void;
-  editingItem: Item | null;
-  editIndex: number | null;
+    onSave: (updatedCollection: Item[]) => void;
+    editingItem: Item | null;
+    editIndex: number | null;
 }
 
+const StyledPaper = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(3),
+    maxWidth: 800,
+    margin: 'auto',
+    marginTop: theme.spacing(2),
+    borderRadius: '8px',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    marginBottom: theme.spacing(2),
+    width: '100%',
+}));
+
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+    marginBottom: theme.spacing(2),
+    width: '100%',
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    backgroundColor: '#1976d2',
+    color: 'white',
+    '&:hover': {
+        backgroundColor: '#1565c0',
+    },
+}));
+
+const FileInput = styled('input')({
+    marginBottom: '16px',
+});
+
 const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) => {
-  const [collection, setCollection] = useState<Item[]>(() => {
-    const storedCollection = localStorage.getItem('collection');
-    return storedCollection ? JSON.parse(storedCollection) : [];
-  });
-
-  const [item, setItem] = useState<Item>({
-    name: '',
-    brand: '',
-    series: '',
-    character: '',
-    type: '',
-    condition: '',
-    tags: '',
-    photo: null,
-    edition: '',
-  });
-
-  useEffect(() => {
-    if (editingItem) {
-      setItem({ ...editingItem });
-    } else {
-      setItem({
+    const [item, setItem] = useState<Item>({
         name: '',
         brand: '',
         series: '',
@@ -51,145 +63,173 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
         tags: '',
         photo: null,
         edition: '',
-      });
-    }
-  }, [editingItem]);
+    });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { id, value } = e.target;
-    setItem({ ...item, [id]: value });
-  };
+    useEffect(() => {
+        if (editingItem) {
+            setItem({ ...editingItem });
+        } else {
+            setItem({
+                name: '',
+                brand: '',
+                series: '',
+                character: '',
+                type: '',
+                condition: '',
+                tags: '',
+                photo: null,
+                edition: '',
+            });
+        }
+    }, [editingItem]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setItem({ ...item, photo: reader.result as string });
-      reader.readAsDataURL(file);
-    } else {
-      setItem({ ...item, photo: null });
-    }
-  };
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setItem(prevItem => ({ ...prevItem, [name]: value }));
+    }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    const handleSelectChange = useCallback((event: SelectChangeEvent) => {
+        const { name, value } = event.target;
+        setItem(prevItem => ({ ...prevItem, [name]: value }));
+    }, []);
 
-    const newItem: Item = { ...item };
+    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => setItem(prevItem => ({ ...prevItem, photo: reader.result as string }));
+            reader.readAsDataURL(file);
+        } else {
+            setItem(prevItem => ({ ...prevItem, photo: null }));
+        }
+    }, []);
 
-    let updatedCollection: Item[];
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSave(prevCollection => {
+            if (editIndex !== null) {
+                return prevCollection.map((existingItem, index) =>
+                    index === editIndex ? item : existingItem
+                );
+            } else {
+                return [...prevCollection, item];
+            }
+        });
 
-    if (editIndex !== null) {
-      updatedCollection = [...collection];
-      updatedCollection[editIndex] = newItem;
-    } else {
-      updatedCollection = [...collection, newItem];
-    }
+        if (editIndex === null) {
+            setItem({
+                name: '',
+                brand: '',
+                series: '',
+                character: '',
+                type: '',
+                condition: '',
+                tags: '',
+                photo: null,
+                edition: '',
+            });
+        }
+    };
 
-    setCollection(updatedCollection);
-    localStorage.setItem('collection', JSON.stringify(updatedCollection)); // Save all fields to local storage
-    onSave(updatedCollection);
-  };
+    return (
+        <StyledPaper elevation={0}>
+            <form onSubmit={handleSubmit}>
+                <Stack spacing={2}>
+                    <StyledTextField
+                        label="Item Name"
+                        name="name"
+                        required
+                        value={item.name}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
+                    <StyledTextField
+                        label="Brand"
+                        name="brand"
+                        required
+                        value={item.brand}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
+                    <StyledTextField
+                        label="Series"
+                        name="series"
+                        value={item.series}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
+                    <StyledTextField
+                        label="Character"
+                        name="character"
+                        value={item.character}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
 
-  return (
-    <div className="bg-white p-4 shadow rounded">
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            id="name"
-            className="border p-2 rounded"
-            placeholder="Item Name"
-            required
-            value={item.name}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="brand"
-            className="border p-2 rounded"
-            placeholder="Brand"
-            required
-            value={item.brand}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="series"
-            className="border p-2 rounded"
-            placeholder="Series"
-            value={item.series}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="character"
-            className="border p-2 rounded"
-            placeholder="Character"
-            value={item.character}
-            onChange={handleChange}
-          />
-          <select
-            id="type"
-            className="border p-2 rounded"
-            value={item.type}
-            onChange={handleChange}
-          >
-            <option value="">Select Type</option>
-            <option value="Action Figure">Action Figure</option>
-            <option value="Prop">Prop</option>
-            <option value="Box Set">Box Set</option>
-          </select>
-          <select
-            id="condition"
-            className="border p-2 rounded"
-            value={item.condition}
-            onChange={handleChange}
-          >
-            <option value="">Select Condition</option>
-            <option value="New">New</option>
-            <option value="Mint">Mint</option>
-            <option value="Used">Used</option>
-          </select>
-          {/* Moved Edition dropdown here */}
-          <select
-            id="edition"
-            className="border p-2 rounded"
-            value={item.edition || ''}
-            onChange={handleChange}
-          >
-            <option value="">Select Edition</option>
-            <option value="Standard Edition">Standard Edition</option>
-            <option value="Deluxe Edition">Deluxe Edition</option>
-            <option value="Collector's Edition">Collector's Edition</option>
-            <option value="Special Edition">Special Edition</option>
-          </select>
-          {/* Tags input */}
-          <input
-            type="text"
-            id="tags"
-            className="border p-2 rounded"
-            placeholder="Tags"
-            value={item.tags || ''}
-            onChange={handleChange}
-          />
-          {/* File input (moved last) */}
-          <input
-            type="file"
-            id="photo"
-            className="border p-2 rounded"
-            onChange={handleFileChange}
-          />
-          {item.photo && <img src={item.photo} alt="preview" width={100} />}
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-        >
-          Save Item
-        </button>
-      </form>
-    </div>
-  );
+                    <StyledFormControl fullWidth>
+                        <InputLabel>Type</InputLabel>
+                        <Select
+                            name="type"
+                            value={item.type || ''}
+                            onChange={handleSelectChange}
+                            fullWidth
+                        >
+                            <MenuItem value="">Select Type</MenuItem>
+                            <MenuItem value="Action Figure">Action Figure</MenuItem>
+                            <MenuItem value="Prop">Prop</MenuItem>
+                            <MenuItem value="Box Set">Box Set</MenuItem>
+                        </Select>
+                    </StyledFormControl>
+
+                    <StyledFormControl fullWidth>
+                        <InputLabel>Condition</InputLabel>
+                        <Select
+                            name="condition"
+                            value={item.condition || ''}
+                            onChange={handleSelectChange}
+                            fullWidth
+                        >
+                            <MenuItem value="">Select Condition</MenuItem>
+                            <MenuItem value="New">New</MenuItem>
+                            <MenuItem value="Mint">Mint</MenuItem>
+                            <MenuItem value="Used">Used</MenuItem>
+                        </Select>
+                    </StyledFormControl>
+
+                    <StyledFormControl fullWidth>
+                        <InputLabel>Edition</InputLabel>
+                        <Select
+                            name="edition"
+                            value={item.edition || ''}
+                            onChange={handleSelectChange}
+                            fullWidth
+                        >
+                            <MenuItem value="">Select Edition</MenuItem>
+                            <MenuItem value="Standard">Standard</MenuItem>
+                            <MenuItem value="Deluxe">Deluxe</MenuItem>
+                            <MenuItem value="Collector's">Collector's</MenuItem>
+                            <MenuItem value="Special">Special</MenuItem>
+                        </Select>
+                    </StyledFormControl>
+
+                    <StyledTextField
+                        label="Tags"
+                        name="tags"
+                        value={item.tags || ''}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
+
+                    <FileInput type="file" name="photo" onChange={handleFileChange} />
+                    {item.photo && <img src={item.photo} alt="preview" width={100} />}
+
+                    <StyledButton type="submit" variant="contained">
+                        {editIndex !== null ? 'Update Item' : 'Add Item'}
+                    </StyledButton>
+                </Stack>
+            </form>
+        </StyledPaper>
+    );
 };
 
 export default ItemForm;

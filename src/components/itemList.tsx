@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getItems, Item } from '../services/api';
 import { AxiosError } from 'axios';
+import { CircularProgress, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
 
 const ItemList: React.FC = () => {
     const [items, setItems] = useState<Item[]>([]);
@@ -14,7 +15,6 @@ const ItemList: React.FC = () => {
                 setItems(fetchedItems);
                 setLoading(false);
             } catch (err) {
-                // Type the error correctly
                 if (err instanceof AxiosError) {
                     console.error('Error fetching items:', err.response?.data);
                 } else {
@@ -28,21 +28,25 @@ const ItemList: React.FC = () => {
         fetchItems();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-
     return (
-        <div>
-            <h1>Items List</h1>
-            <ul>
+        <Container maxWidth="md">
+            <Typography variant="h4" gutterBottom>
+                Items List
+            </Typography>
+
+            {loading && <CircularProgress />}
+            {error && <Typography color="error">{error}</Typography>}
+
+            <List>
                 {items.map((item) => (
-                    <li key={item._id}>
-                        {item.name} - {item.brand}
-                    </li>
+                    <ListItem key={item._id} divider>
+                        <ListItemText primary={item.name} secondary={item.brand} />
+                    </ListItem>
                 ))}
-            </ul>
-        </div>
+            </List>
+        </Container>
     );
 };
 
 export default ItemList;
+

@@ -3,7 +3,8 @@ import Header from './components/Header';
 import ItemForm from './components/ItemForm';
 import CollectionDisplay from './components/CollectionDisplay';
 import Footer from './components/Footer';
-import { Item } from './types/item'; // Import Item type from a dedicated file
+import { Item } from './types/item';
+import { Container, CssBaseline } from '@mui/material';
 
 const App: React.FC = () => {
     const [collection, setCollection] = useState<Item[]>([]);
@@ -28,14 +29,16 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-6">
+        <Container>
+            <CssBaseline />
             <Header />
-            <main className="flex flex-col items-center space-y-4">
+            <main>
                 <ItemForm onSave={handleCollectionUpdate} editingItem={editingItem} editIndex={editIndex} />
+                
                 <CollectionDisplay collection={collection} onUpdate={handleCollectionUpdate} onEdit={handleEdit} />
             </main>
             <Footer />
-        </div>
+        </Container>
     );
 };
 

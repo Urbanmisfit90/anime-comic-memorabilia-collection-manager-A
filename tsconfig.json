@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
+    "jsx": "react-jsx",
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",

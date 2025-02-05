@@ -8,6 +8,7 @@ export interface ItemDocument extends Document {
     character?: string;
     type?: string;
     condition?: string;
+    edition?: string;
     tags?: string;
     photo?: string;
 }
@@ -19,6 +20,7 @@ const ItemSchema: Schema<ItemDocument> = new Schema({
     character: { type: String },
     type: { type: String },
     condition: { type: String },
+    edition: { type: String},
     tags: { type: String },
     photo: { type: String },
 });
