@@ -8,17 +8,17 @@ const Footer: React.FC = () => {
   );
 };
 
-// Optional inline styling
 const footerStyle: React.CSSProperties = {
   backgroundColor: "#333",
   color: "white",
   textAlign: "center",
-  padding: "0.1rem",
+  padding: "1rem",  // Increased padding
   position: "fixed",
   bottom: 0,
   left: 0,
   right: 0,
   width: "100%",
+  zIndex: 100,
 };
 
 export default Footer;
