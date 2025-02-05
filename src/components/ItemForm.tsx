@@ -83,6 +83,20 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
         }
     }, [editingItem]);
 
+    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setItem(prevItem => ({ ...prevItem, photo: base64String }));
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setItem(prevItem => ({ ...prevItem, photo: null }));
+        }
+    }, []);
+
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setItem(prevItem => ({ ...prevItem, [name]: value }));
@@ -93,42 +107,31 @@ const ItemForm: React.FC<ItemFormProps> = ({ onSave, editingItem, editIndex }) =
         setItem(prevItem => ({ ...prevItem, [name]: value }));
     }, []);
 
-    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setItem(prevItem => ({ ...prevItem, photo: reader.result as string }));
-            reader.readAsDataURL(file);
-        } else {
-            setItem(prevItem => ({ ...prevItem, photo: null }));
-        }
-    }, []);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
         onSave(prevCollection => {
             if (editIndex !== null) {
-                return prevCollection.map((existingItem, index) =>
+                const updatedCollection = prevCollection.map((existingItem, index) =>
                     index === editIndex ? item : existingItem
                 );
+                return updatedCollection;
             } else {
                 return [...prevCollection, item];
             }
         });
 
-        if (editIndex === null) {
-            setItem({
-                name: '',
-                brand: '',
-                series: '',
-                character: '',
-                type: '',
-                condition: '',
-                tags: '',
-                photo: null,
-                edition: '',
-            });
-        }
+        setItem({
+            name: '',
+            brand: '',
+            series: '',
+            character: '',
+            type: '',
+            condition: '',
+            tags: '',
+            photo: null,
+            edition: '',
+        });
     };
 
     return (

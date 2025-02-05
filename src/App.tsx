@@ -11,14 +11,30 @@ const App: React.FC = () => {
     const [editingItem, setEditingItem] = useState<Item | null>(null);
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
+    // Load collection from localStorage on mount
     useEffect(() => {
-        const storedCollection = JSON.parse(localStorage.getItem("collection") || "[]") as Item[];
-        setCollection(storedCollection);
+        const storedCollectionString = localStorage.getItem("collection");
+        
+        if (storedCollectionString) {
+            try {
+                const storedCollection = JSON.parse(storedCollectionString) as Item[];
+                setCollection(storedCollection ?? []); // Ensure no null values
+            } catch (error) {
+                console.error("Error parsing collection from localStorage:", error);
+                setCollection([]); // Reset if parsing fails
+            }
+        }
     }, []);
+
+    // Prevent overwriting localStorage with an empty collection on first render
+    useEffect(() => {
+        if (collection.length > 0) {
+            localStorage.setItem("collection", JSON.stringify(collection));
+        }
+    }, [collection]);
 
     const handleCollectionUpdate = (updatedCollection: Item[]) => {
         setCollection(updatedCollection);
-        localStorage.setItem("collection", JSON.stringify(updatedCollection));
         setEditingItem(null);
         setEditIndex(null);
     };
