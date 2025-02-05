@@ -12,7 +12,7 @@ const footerStyle: React.CSSProperties = {
   backgroundColor: "#333",
   color: "white",
   textAlign: "center",
-  padding: "1rem",  // Increased padding
+  padding: ".5rem",
   position: "fixed",
   bottom: 0,
   left: 0,
