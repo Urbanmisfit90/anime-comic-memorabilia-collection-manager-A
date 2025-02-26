@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "jsx": "react-jsx",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "module": "CommonJS", // Change to CommonJS
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "strict": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "strict": true
+    "skipLibCheck": true
+  },
+  "ts-node": {
+    "esm": false // Disable ES modules support for ts-node
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
-

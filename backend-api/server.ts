@@ -1,24 +1,27 @@
-import express from 'express';
-import connectDB from './config/db';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import itemsRoutes from './routes/items';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import bodyParser from "body-parser";
+import connectDB from "./config/db.js";
+import itemsRoutes from "./routes/items.js";
 
 dotenv.config();
 
 const app = express();
-
-// Connect to Database
-connectDB();
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 // Routes
-app.use('/items', itemsRoutes);
+app.use("/api/items", itemsRoutes);
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Database Connection
+connectDB()
+  .then(() => console.log("Database Connected"))
+  .catch((err) => console.error("Database Connection Error:", err));
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+export default app;
