@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import collectionReducer from './collectionSlice';
+import itemsReducer from './itemsSlice';
 
 export const store = configureStore({
   reducer: {
-    collection: collectionReducer,
+    items: itemsReducer,
   },
 });
 
-// Infer RootState and AppDispatch types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
